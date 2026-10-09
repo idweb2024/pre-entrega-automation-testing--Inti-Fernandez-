@@ -7,6 +7,7 @@ from selenium.webdriver.chrome.service import Service
 def driver():
     service = Service("chromedriver.exe")
     driver = webdriver.Chrome(service=service)
+    driver.maximize_window()
     driver.implicitly_wait(5)
     yield driver
     driver.quit()
