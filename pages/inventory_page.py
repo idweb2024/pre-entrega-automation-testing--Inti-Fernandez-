@@ -38,6 +38,13 @@ class InventoryPage:
         primer_boton.click()
         return self
 
+    # Metodo para agregar un producto por su nombre
+    def agregar_producto(self, nombre):
+        """Agrega al carrito el producto con ese nombre."""
+        id_boton = "add-to-cart-" + nombre.lower().replace(" ", "-")
+        self.driver.find_element(By.ID, id_boton).click()
+        return self
+
     def obtener_contador_carrito(self):
         """Espera a que el badge sea visible y devuelve su valor como número."""
         badge = self.wait.until(EC.visibility_of_element_located(self._CART_BADGE))
