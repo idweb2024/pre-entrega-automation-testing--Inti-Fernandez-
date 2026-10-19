@@ -2,13 +2,19 @@
 
 ## Propósito del proyecto
 
-Automatización de pruebas end-to-end sobre [SauceDemo](https://www.saucedemo.com/) usando Selenium WebDriver y Pytest. Cubre tres flujos: login, navegación del catálogo de productos y agregar un producto al carrito, validando en cada caso que la aplicación se comporte como se espera. El proyecto está organizado con el patrón Page Object Model (POM): los selectores y acciones de cada pantalla viven en clases dentro de `pages/`, y los tests solo describen el flujo y hacen las validaciones.
+Automatización de pruebas sobre [SauceDemo](https://www.saucedemo.com/) (interfaz web) y [reqres.in](https://reqres.in/) (API REST), usando Selenium WebDriver, `requests` y Pytest.
+
+- **UI:** login, navegación del catálogo y carrito de compras, validando en cada caso que la aplicación se comporte como se espera.
+- **Page Object Model (POM):** los selectores y acciones de cada pantalla viven en clases dentro de `pages/`, y los tests solo describen el flujo y hacen las validaciones.
+- **Data-driven:** los datos de prueba están separados del código, en archivos CSV y JSON dentro de `datos/`, y se usan con `@pytest.mark.parametrize`.
+- **API:** pruebas de login, listado y creación de usuarios, validando códigos de estado y contenido de las respuestas.
 
 ## Tecnologías utilizadas
 
 - Python
 - Selenium WebDriver
 - Pytest
+- Requests
 - Page Object Model (patrón de diseño)
 - pytest-html (generación de reportes)
 - Git / GitHub
@@ -18,9 +24,21 @@ Automatización de pruebas end-to-end sobre [SauceDemo](https://www.saucedemo.co
 1. Clonar el repositorio.
 2. Instalar las dependencias:
    ```
-   pip install selenium pytest pytest-html
+   pip install selenium pytest pytest-html requests
    ```
-3. Descargar el [ChromeDriver](https://googlechromelabs.github.io/chrome-for-testing/) correspondiente a tu versión de Chrome y colocar el archivo `chromedriver.exe` en la raíz del proyecto.
+3. Tener Google Chrome instalado. Selenium descarga automáticamente el ChromeDriver compatible con tu versión de Chrome, así que no hace falta bajarlo a mano (la primera ejecución necesita conexión a internet).
+4. **Solo para los tests de API:** reqres.in exige una API key en cada pedido.
+   - Crear una cuenta gratuita en [app.reqres.in](https://app.reqres.in/) y copiar una clave.
+   - Guardarla en la variable de entorno `REQRES_API_KEY` (nunca dentro del código):
+
+     Windows (PowerShell), de forma permanente. Después, abrir una terminal nueva:
+     ```
+     setx REQRES_API_KEY "tu_clave"
+     ```
+     macOS / Linux:
+     ```
+     export REQRES_API_KEY="tu_clave"
+     ```
 
 ## Cómo ejecutar las pruebas
 
@@ -30,19 +48,22 @@ Parado en la raíz del proyecto:
 pytest -v
 ```
 
-Para generar el reporte HTML:
+Otras formas de ejecución:
+
+| Qué correr | Comando |
+|---|---|
+| Solo tests de UI | `pytest tests/ -v` |
+| Solo tests de API | `pytest -m api -v` |
+| Solo tests de humo (smoke) | `pytest -m smoke -v` |
+| UI + API | `pytest tests/ tests_api/ -v` |
+
+Para generar el reporte HTML con todos los tests:
 
 ```
-pytest -v --html=reports/reporte.html --self-contained-html
+pytest tests/ tests_api/ -v --html=reports/reporte_completo.html --self-contained-html
 ```
 
-El reporte se genera en `reports/reporte.html`.
-
-Para correr solo los tests marcados como `smoke` y generar su reporte:
-
-```
-pytest -m smoke --html=reports/preentrega_pom.html --self-contained-html
-```
+El reporte se genera en `reports/reporte_completo.html`.
 
 ## Estructura del proyecto
 
@@ -52,14 +73,25 @@ pytest -m smoke --html=reports/preentrega_pom.html --self-contained-html
 │   ├── login_page.py
 │   ├── inventory_page.py
 │   └── cart_page.py
-├── tests/
-│   ├── conftest.py          # fixture del driver de Selenium
+├── tests/                   # Tests de UI (Selenium)
+│   ├── conftest.py          # fixture del driver
 │   ├── test_1_login.py
 │   ├── test_2_catalogo.py
-│   └── test_3_carrito.py
+│   ├── test_3_carrito.py
+│   ├── test_login_csv.py    # login parametrizado con datos/login.csv
+│   └── test_carrito_json.py # carrito parametrizado con datos/productos.json
+├── tests_api/               # Tests de API (requests)
+│   ├── __init__.py
+│   ├── test_login_api.py
+│   ├── test_users_api.py
+│   └── test_create_user_api.py
+├── datos/                   # Datos de prueba externos
+│   ├── login.csv
+│   └── productos.json
 ├── utils/
-│   └── helpers.py           # función de login reutilizable
+│   ├── helpers.py           # función de login reutilizable
+│   ├── datos.py             # lectura de CSV y JSON
+│   └── api_utils.py         # URL base y headers (API key) para los tests de API
 ├── reports/                 # reportes HTML generados por pytest-html
-├── pytest.ini
-└── chromedriver.exe
+└── pytest.ini               # configuración de Pytest y markers (smoke, api)
 ```
