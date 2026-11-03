@@ -7,3 +7,12 @@ __pycache__/
 available
 use
 linkDrive.txt
+
+# Reportes y logs (se generan solos, no se versionan)
+reports/*
+!reports/.gitkeep
+logs/*
+!logs/.gitkeep
+
+# Entrega comprimida
+*.rar
