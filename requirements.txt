@@ -4,3 +4,5 @@ pytest-html
 pytest-rerunfailures
 requests
 faker
+behave
+behave-html-formatter
