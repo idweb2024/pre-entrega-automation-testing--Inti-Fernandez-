@@ -4,6 +4,7 @@ from datetime import datetime
 
 from selenium import webdriver
 from utils.logger import logger
+import os
 
 SCREEN_DIR = pathlib.Path('reports/screens')
 SCREEN_DIR.mkdir(parents=True, exist_ok=True)
@@ -16,6 +17,11 @@ def before_all(context):
         "profile.password_manager_enabled": False,
         "profile.password_manager_leak_detection": False,
     })
+    if os.environ.get("CI"):
+        opciones.add_argument("--headless=new")
+        opciones.add_argument("--no-sandbox")
+        opciones.add_argument("--disable-dev-shm-usage")
+        opciones.add_argument("--window-size=1920,1080")
     context.driver = webdriver.Chrome(options=opciones)
     context.driver.maximize_window()
     logger.info("Behave: navegador iniciado")

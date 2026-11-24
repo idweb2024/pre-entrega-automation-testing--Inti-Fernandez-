@@ -3,6 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 import pathlib
 import pytest_html
+import os
 
 target = pathlib.Path('reports/screens')
 target.mkdir(parents=True, exist_ok=True)
@@ -24,8 +25,14 @@ def pytest_runtest_makereport(item, call):
 
 @pytest.fixture
 def driver():
+    opciones = webdriver.ChromeOptions()
+    if os.environ.get("CI"):
+        opciones.add_argument("--headless=new")
+        opciones.add_argument("--no-sandbox")
+        opciones.add_argument("--disable-dev-shm-usage")
+        opciones.add_argument("--window-size=1920,1080")
     service = Service()
-    driver = webdriver.Chrome(service=service)
+    driver = webdriver.Chrome(service=service, options=opciones)
     driver.maximize_window()
     driver.implicitly_wait(5)
     yield driver
