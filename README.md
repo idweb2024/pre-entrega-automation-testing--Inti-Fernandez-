@@ -1,5 +1,7 @@
 # Pre-Entrega Automation Testing — Inti Fernández
 
+![CI Status](https://github.com/idweb2024/pre-entrega-automation-testing--Inti-Fernandez-/actions/workflows/ci.yml/badge.svg?branch=feature/ci-cd)
+
 ## Propósito del proyecto
 
 Automatización de pruebas sobre [SauceDemo](https://www.saucedemo.com/) (interfaz web), [reqres.in](https://reqres.in/) y [JSONPlaceholder](https://jsonplaceholder.typicode.com/) (APIs REST), usando Selenium WebDriver, `requests` y Pytest.
