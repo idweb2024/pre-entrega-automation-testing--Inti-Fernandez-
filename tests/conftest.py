@@ -26,6 +26,11 @@ def pytest_runtest_makereport(item, call):
 @pytest.fixture
 def driver():
     opciones = webdriver.ChromeOptions()
+    opciones.add_experimental_option("prefs", {
+        "credentials_enable_service": False,
+        "profile.password_manager_enabled": False,
+        "profile.password_manager_leak_detection": False,
+    })
     if os.environ.get("CI"):
         opciones.add_argument("--headless=new")
         opciones.add_argument("--no-sandbox")
