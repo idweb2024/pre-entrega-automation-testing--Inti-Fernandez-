@@ -42,7 +42,8 @@ class InventoryPage:
     def agregar_producto(self, nombre):
         """Agrega al carrito el producto con ese nombre."""
         id_boton = "add-to-cart-" + nombre.lower().replace(" ", "-")
-        self.driver.find_element(By.ID, id_boton).click()
+        boton = self.wait.until(EC.element_to_be_clickable((By.ID, id_boton)))
+        boton.click()
         return self
 
     def obtener_contador_carrito(self):
