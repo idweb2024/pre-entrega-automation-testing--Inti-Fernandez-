@@ -53,7 +53,7 @@ class InventoryPage:
 
     def ir_al_carrito(self):
         """Navega a la página del carrito."""
-        self.driver.find_element(*self._CART_LINK).click()
+        self.wait.until(EC.element_to_be_clickable(self._CART_LINK)).click()
         # Importación lazy para evitar dependencias circulares
         from pages.cart_page import CartPage
         return CartPage(self.driver)

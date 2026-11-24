@@ -33,7 +33,8 @@ def driver():
         opciones.add_argument("--window-size=1920,1080")
     service = Service()
     driver = webdriver.Chrome(service=service, options=opciones)
-    driver.maximize_window()
+    if not os.environ.get("CI"):
+        driver.maximize_window()
     driver.implicitly_wait(5)
     yield driver
     driver.quit()

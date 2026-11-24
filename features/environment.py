@@ -23,7 +23,8 @@ def before_all(context):
         opciones.add_argument("--disable-dev-shm-usage")
         opciones.add_argument("--window-size=1920,1080")
     context.driver = webdriver.Chrome(options=opciones)
-    context.driver.maximize_window()
+    if not os.environ.get("CI"):
+        context.driver.maximize_window()
     logger.info("Behave: navegador iniciado")
 
 def before_scenario(context, scenario):
